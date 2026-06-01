@@ -61,8 +61,8 @@ export default function NewTodo() {
               <Text>The selected priority will be used for notifications.</Text>
             }
           >
+            {/* Pickers can be nested */}
             <Picker
-              // modifiers={[pickerStyle("menu")]}
               label="Priority"
               selection={selectedTag}
               onSelectionChange={setSelectedTag}
