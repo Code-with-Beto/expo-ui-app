@@ -1,4 +1,5 @@
 import { useColors } from "@/theme/ThemeContext";
+import { formatPhone } from "@/utils/formatPhone";
 import ChevronRight from "@expo/material-symbols/chevron_right.xml";
 import {
   Column,
@@ -7,11 +8,21 @@ import {
   LazyColumn,
   ListItem,
   RadioButton,
+  RNHostView,
   Switch,
   Text,
+  TextField,
+  useNativeState,
 } from "@expo/ui/jetpack-compose";
-import { clickable, clip, Shapes } from "@expo/ui/jetpack-compose/modifiers";
-import { ReactNode } from "react";
+import {
+  clickable,
+  clip,
+  fillMaxWidth,
+  padding,
+  Shapes,
+} from "@expo/ui/jetpack-compose/modifiers";
+import { ReactNode, useCallback, useState } from "react";
+import { TextInput } from "react-native";
 
 function SettingsSection({
   title,
@@ -75,6 +86,24 @@ function SettingsActionRow({
 
 export default function NewTodo() {
   const { secondaryBackground } = useColors();
+  const text = useNativeState("");
+  const selection = useNativeState({ start: 0, end: 0 });
+
+  const [stateText, setStateText] = useState("");
+
+  const handleValueChange = useCallback(
+    (v: string) => {
+      "worklet";
+      const formatted = formatPhone(v);
+      if (formatted !== v) {
+        text.value = formatted;
+        // Snaps to end for demo. Real masks need smarter cursor handling.
+        selection.value = { start: formatted.length, end: formatted.length };
+      }
+    },
+    [text, selection],
+  );
+
   return (
     <Host style={{ flex: 1 }}>
       <LazyColumn
@@ -86,6 +115,50 @@ export default function NewTodo() {
         }}
       >
         <SettingsSection title="hello">
+          <Column
+            verticalArrangement={{
+              spacedBy: 8,
+            }}
+          >
+            <RNHostView matchContents>
+              <TextInput
+                placeholder="RN input"
+                value={stateText}
+                onChangeText={(text) => {
+                  const formatted = formatPhone(text);
+                  setStateText(formatted);
+                }}
+                keyboardType="numeric"
+                style={{
+                  borderWidth: 1,
+                  padding: 10,
+                  width: "90%",
+                  height: 50,
+                }}
+              />
+            </RNHostView>
+            <TextField
+              value={text}
+              selection={selection}
+              onValueChange={handleValueChange}
+              onSelectionChange={(selection) => {
+                console.log([selection.start, selection.end]);
+              }}
+              modifiers={[fillMaxWidth(), padding(0, 0, 0, 16)]}
+              keyboardOptions={{ keyboardType: "number" }}
+            >
+              <TextField.LeadingIcon>
+                <Icon source={ChevronRight} />
+              </TextField.LeadingIcon>
+              <TextField.Label>
+                <Text>Username</Text>
+              </TextField.Label>
+              <TextField.Placeholder>
+                <Text>Hello world</Text>
+              </TextField.Placeholder>
+            </TextField>
+          </Column>
+
           <SettingsActionRow
             label="world"
             onPress={() => {}}
