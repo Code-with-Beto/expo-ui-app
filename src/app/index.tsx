@@ -1,6 +1,8 @@
+import { CustomSwiftUIView } from "@/components/CustomSwiftUIView";
 import { Button, Column, Host, Spacer, Text } from "@expo/ui";
-import { Stack, useRouter } from "expo-router";
+import { Color, Stack, useRouter } from "expo-router";
 import { Platform } from "react-native";
+import { rotatingBorder } from "../../modules/my-swift-ui-view/src/RotatingBorderModifier";
 
 export default function Index() {
   const router = useRouter();
@@ -17,7 +19,17 @@ export default function Index() {
       </Stack.Toolbar>
 
       <Host style={{ flex: 1 }}>
-        <Column alignment="center" spacing={12} style={{ padding: 24 }}>
+        <CustomSwiftUIView />
+        <Column
+          alignment="center"
+          spacing={12}
+          style={{ padding: 24 }}
+          modifiers={[
+            rotatingBorder({
+              tint: Color.ios.systemOrange,
+            }),
+          ]}
+        >
           <Spacer flexible />
           <Text textStyle={{ fontSize: 20, fontWeight: "bold" }}>
             Expo UI playground
