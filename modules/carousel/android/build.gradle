@@ -1,0 +1,48 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.jetbrains.kotlin.plugin.compose:org.jetbrains.kotlin.plugin.compose.gradle.plugin:${kotlinVersion}")
+  }
+}
+
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+
+group = 'expo.modules.carousel'
+version = '0.1.0'
+
+android {
+  namespace "expo.modules.carousel"
+  defaultConfig {
+    versionCode 1
+    versionName "0.1.0"
+  }
+  buildFeatures {
+    compose true
+  }
+  lintOptions {
+    abortOnError false
+  }
+}
+
+dependencies {
+  implementation 'androidx.compose.foundation:foundation-android:1.10.6'
+  implementation 'androidx.compose.ui:ui-android:1.10.6'
+  implementation 'androidx.compose.material3:material3-android:1.5.0-alpha17'
+  if (findProject(':expo-ui') != null) {
+    implementation project(':expo-ui')
+  } else {
+    implementation 'expo.modules.ui:expo.modules.ui:+'
+  }
+  // Coil 3 for native async image loading inside the carousel items.
+  implementation 'io.coil-kt.coil3:coil-compose:3.2.0'
+  // Network fetcher — required for remote http(s) image URLs. Without it Coil
+  // only loads local sources (content://, file://, resources). Platano didn't
+  // need this because it loads local content:// media-library assets.
+  implementation 'io.coil-kt.coil3:coil-network-okhttp:3.2.0'
+}
